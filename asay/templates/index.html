@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}대시보드{% endblock %}
+{% block content %}
+<section class="hero">
+ <div class="shell hero-grid">
+   <div class="hero-copy">
+     <p class="eyebrow"><span class="eyebrow-line"></span> ONLINE EVIDENCE MANAGEMENT</p>
+     <h1>말의 상처를,<br><span>대응할 수 있는 기록으로.</span></h1>
+     <p class="hero-description">악성 댓글과 온라인 콘텐츠를 더 이상 반복해서 확인하지 않아도 되도록. 링크를 기록하고, 사건별로 정리하고, 필요한 자료를 한 번에 준비하세요.</p>
+     <div class="hero-actions"><a href="#new-case" class="btn btn-primary">새 사건 만들기 <span aria-hidden="true">↗</span></a><a href="#cases" class="btn btn-outline">내 사건 보기 <span aria-hidden="true">↓</span></a></div>
+     <div class="hero-footnote"><span class="dot-line"></span> 공개 페이지 수집 · 수동 첨부 · 자료 출력</div>
+   </div>
+   <div class="hero-visual" aria-hidden="true">
+     <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+     <div class="hero-shield"><svg viewBox="0 0 150 168" fill="none" role="presentation"><path d="M75 8 138 33v49c0 36-23 60-63 78C35 142 12 118 12 82V33L75 8Z" fill="#fff" stroke="#9DB8BB" stroke-width="2"/><path d="M75 28 121 47v35c0 27-15 44-46 59-31-15-46-32-46-59V47l46-19Z" fill="#EFF7F5"/><path d="m52 84 15 15 32-34" stroke="#247567" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+     <span class="visual-chip chip-1">01 &nbsp; 증거 수집</span><span class="visual-chip chip-2">02 &nbsp; 사건별 정리</span><span class="visual-chip chip-3">03 &nbsp; 패키지 출력</span>
+   </div>
+ </div>
+</section>
+<section class="shell dashboard-section" id="cases">
+ <div class="section-heading"><div><p class="overline">MY WORKSPACE</p><h2>사건 관리 대시보드</h2><p class="muted">사건과 증거 기록을 한곳에서 확인하세요.</p></div><a class="text-link" href="#new-case">+ 새 사건 등록</a></div>
+ <div class="stats-grid">
+  <article class="stat-card"><span class="stat-label">전체 사건</span><div class="stat-number">{{ total_cases }}<span> 건</span></div><span class="stat-bottom">등록된 사건 기록</span></article>
+  <article class="stat-card"><span class="stat-label">수집 증거</span><div class="stat-number">{{ evidence_count }}<span> 개</span></div><span class="stat-bottom">자동 수집 + 수동 기록</span></article>
+  <article class="stat-card accent-stat"><span class="stat-label">준비된 출력 형식</span><div class="stat-number">3<span> 종</span></div><span class="stat-bottom">PDF · Excel · ZIP</span></article>
+ </div>
+ <div class="workspace-grid">
+  <section class="panel case-list-panel"><div class="panel-head"><div><h3>내 사건 목록</h3><p class="muted smaller">기록된 사건을 선택해 증거를 관리하세요.</p></div><span class="pill">{{ cases|length }} CASES</span></div>
+   <form action="/" method="get" class="search-field"><span aria-hidden="true">⌕</span><input name="q" value="{{ q }}" placeholder="사건명 또는 설명 검색" aria-label="사건 검색"><button type="submit">검색</button></form>
+   <div class="case-items">
+    {% for c in cases %}<a class="case-item" href="/cases/{{ c.id }}"><span class="case-icon">▤</span><span class="case-content"><strong>{{ c.title }}</strong><small>{{ c.created_at[:10] }} · 증거 {{ c.evidence_count }}개</small></span><span class="case-arrow">↗</span></a>{% else %}
+    <div class="empty-state"><div class="empty-icon">▤</div><strong>{% if q %}검색 결과가 없습니다{% else %}아직 등록된 사건이 없습니다{% endif %}</strong><p>{% if q %}다른 키워드로 검색해 보세요.{% else %}오른쪽에서 첫 사건을 만들어 증거를 모아 보세요.{% endif %}</p></div>
+    {% endfor %}
+   </div>
+  </section>
+  <section class="panel new-case-panel" id="new-case"><div class="panel-head"><div><p class="overline">GET STARTED</p><h3>새 사건 등록</h3><p class="muted smaller">사건을 만든 뒤 URL 또는 파일을 추가할 수 있습니다.</p></div></div>
+   <form action="/cases" method="post" class="form-stack"><label for="case-title">사건 이름 <span class="required">*</span></label><input id="case-title" name="title" required maxlength="120" placeholder="예: 커뮤니티 악성 게시글 피해"><label for="case-desc">사건 설명 <span class="optional">선택</span></label><textarea id="case-desc" name="description" rows="5" maxlength="2000" placeholder="발생 상황과 수집 목적을 간단히 적어주세요."></textarea><p class="form-note">입력한 내용은 로컬 컴퓨터에만 저장됩니다.</p><button type="submit" class="btn btn-primary btn-full">사건 생성하기 <span aria-hidden="true">→</span></button></form>
+  </section>
+ </div>
+</section>
+<section class="workflow" id="workflow"><div class="shell"><div class="section-heading"><div><p class="overline">HOW IT WORKS</p><h2>복잡한 증거 정리, 세 단계로</h2></div></div><div class="workflow-grid"><article><span class="step-num">01</span><div class="step-emoji">↗</div><h3>링크 및 자료 등록</h3><p>공개 URL을 수집하거나 캡처 파일과 정보를 직접 등록합니다.</p></article><article><span class="step-num">02</span><div class="step-emoji">▤</div><h3>사건별 기록</h3><p>수집 시각과 메타데이터를 보관하고 검토 메모 및 재수집 기록을 남깁니다.</p></article><article><span class="step-num">03</span><div class="step-emoji">↓</div><h3>증거자료 패키지</h3><p>PDF·Excel 목록과 첨부파일을 묶어 상담·신고 준비에 활용합니다.</p></article></div><p class="workflow-disclaimer">※ Asay는 법적 판단이나 제출을 대행하지 않습니다. 모든 자동 수집 결과는 원본과 비교하여 확인해야 합니다.</p></div></section>
+{% endblock %}
